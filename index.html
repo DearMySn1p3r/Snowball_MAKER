@@ -278,7 +278,7 @@ if(window.__V!=='logo'){
 const $=s=>document.querySelector(s);
 /* ---------------- options ---------------- */
 const O={
- species:[['cat','고양이'],['bear','곰'],['bunny','토끼'],['dog','강아지'],['fox','여우'],['hamster','햄스터'],['mouse','생쥐'],['panda','판다'],['sheep','양'],['frog','개구리'],['chick','병아리'],['dino','공룡'],['wolf','늑대'],['duck','오리'],['deer','사슴']],
+ species:[['cat','고양이'],['bear','곰'],['bunny','토끼'],['dog','강아지'],['fox','여우'],['hamster','햄스터'],['mouse','생쥐'],['panda','판다'],['sheep','양'],['frog','개구리'],['chick','병아리'],['dino','공룡'],['wolf','늑대'],['duck','오리'],['deer','사슴'],['raccoon','너구리']],
  body:[['bean','콩'],['bell','종'],['drop','물방울']],
  eyes:[['crayon','크레용'],['dot','콩'],['round','반짝'],['big','초롱'],['oval','콩알'],['ring','동그라미'],['flower','꽃'],['happy','반달'],['content','웃는 눈'],['wink','윙크'],['line','일자'],['shut','><'],['cross','엑스'],['star','별'],['heart','하트'],['spiral','뱅글'],['half','졸린']],
  mouth:[['w','ω'],['cat','냥'],['fang','송곳니'],['v','ㅅ'],['smile','웃음'],['lol','활짝'],['open','헤'],['tongue','메롱'],['tri','앙'],['o','오'],['pout','쪽'],['kiss','뽀뽀'],['wave','물결'],['line','일자'],['peak','삐죽'],['none','없음']],
@@ -415,7 +415,8 @@ function drawBlush(x,t,bx,by,R,i){if(t==='crayon')scribble(x,bx,by,R(.058),'rgba
 function paintFace(cv,c){const x=cv.getContext('2d'),W=cv.width,H=cv.height,{cy,dw,dh,ex,ey}=FACE;const X=v=>(v+dw/2)/dw*W,Y=v=>(dh/2-(v-cy))/dh*H,R=v=>v/dw*W;
  x.clearRect(0,0,W,H);const dark=lum(c.fur)<.4,ink=dark?'#f1ece6':'#3b3333';
  [-1,1].forEach((s,i)=>drawBlush(x,c.blush,X(s*(ex+.13)),Y(ey-.09),R,i));
- const pd=c.species==='panda';if(pd){x.fillStyle='rgba(66,59,63,.9)';[-1,1].forEach(s=>{x.save();x.translate(X(s*ex),Y(ey-.012));x.rotate(s*.45);x.beginPath();x.ellipse(0,0,R(.13),R(.098),0,0,Math.PI*2);x.fill();x.restore()});x.fillStyle='#fbf8f3';[-1,1].forEach(s=>{x.beginPath();x.arc(X(s*ex),Y(ey),R(.082),0,Math.PI*2);x.fill()})}let e1=c.eyeColor==='#3b3333'&&dark?ink:c.eyeColor,e2=c.eyeColor2==='same'?e1:(c.eyeColor2==='#3b3333'&&dark?ink:c.eyeColor2);
+ const pd=c.species==='panda';if(pd){x.fillStyle='rgba(66,59,63,.9)';[-1,1].forEach(s=>{x.save();x.translate(X(s*ex),Y(ey-.012));x.rotate(s*.45);x.beginPath();x.ellipse(0,0,R(.13),R(.098),0,0,Math.PI*2);x.fill();x.restore()});x.fillStyle='#fbf8f3';[-1,1].forEach(s=>{x.beginPath();x.arc(X(s*ex),Y(ey),R(.082),0,Math.PI*2);x.fill()})}if(c.species==='raccoon'){x.fillStyle='rgba(66,59,63,.88)';[-1,1].forEach(s=>{x.save();x.translate(X(s*ex),Y(ey-.012));x.rotate(s*.4);x.beginPath();x.ellipse(0,0,R(.12),R(.09),0,0,Math.PI*2);x.fill();x.restore()})}
+ let e1=c.eyeColor==='#3b3333'&&dark?ink:c.eyeColor,e2=c.eyeColor2==='same'?e1:(c.eyeColor2==='#3b3333'&&dark?ink:c.eyeColor2);
  drawEye(x,c.eyes,X(-ex),Y(ey),e1,R,-1,11);drawEye(x,c.eyes,X(ex),Y(ey),e2,R,1,42);
  drawMouth(x,c.mouth,X,Y,R,ey-.13,ink)}
 function decal(target,c){const {cy,dw,dh}=FACE,probe=new THREE.Mesh(target.geometry);probe.updateMatrixWorld();
@@ -460,6 +461,9 @@ function buildChar(c,slot){
    if(dt==='puff'){[[0,.55,0,.09],[-.07,.5,.03,.07],[.07,.5,.03,.07],[0,.5,-.07,.07],[0,.62,.01,.06]].forEach(([x,y,z,r])=>E(r,1,1,1,x,y,z))}
    if(dt==='bangs'){[[-.13,.42,.3,.08],[0,.46,.32,.095],[.13,.42,.3,.08]].forEach(([x,y,z,r])=>E(r,1,.7,.75,x,y,z,-.5,0))}
    if(dt==='twin'){[-1,1].forEach(s=>E(.08,.45,1.6,.3,s*.05,.53,-.1,-.6,s*.32))}}}
+ if(c.species==='raccoon'){const fm=new THREE.MeshStandardMaterial({color:LC(fur),roughness:.95,map:grainTex(+S.grain)}),dm=new THREE.MeshStandardMaterial({color:LC(mix(fur,'#3b3438',.6)),roughness:.95}),lm=new THREE.MeshStandardMaterial({color:LC(mix(fur,'#ffffff',.6)),roughness:.95});
+  [-1,1].forEach(s=>{const e=new THREE.Group(),o=new THREE.Mesh(new THREE.SphereGeometry(.15,16,12),fm);o.scale.set(1,1.05,.5);e.add(o);const n=new THREE.Mesh(new THREE.SphereGeometry(.09,12,10),lm);n.scale.set(1,1.05,.3);n.position.z=.05;e.add(n);e.position.set(s*.42,.44,-.02);e.rotation.z=-s*.35;head.add(e)});
+  const tg=at(new THREE.Group(),0,.13,-.2,-1.3,0,0);for(let i=0;i<5;i++){const r0=.11+Math.sin(i/4*Math.PI)*.025;tg.add(at(new THREE.Mesh(new THREE.CylinderGeometry(r0*.95,r0,.09,14),i%2?dm:fm),0,i*.088,0))}tg.add(at(new THREE.Mesh(new THREE.SphereGeometry(.1,14,10),dm),0,.42,0));sq.add(tg)}
  if(c.species==='deer'){const fm=new THREE.MeshStandardMaterial({color:LC(fur),roughness:.95,map:grainTex(+S.grain)}),pm=new THREE.MeshStandardMaterial({color:LC(mix(fur,'#f0a9b8',.6)),roughness:.95}),br=new THREE.MeshStandardMaterial({color:LC('#a07856'),roughness:.7,flatShading:true});
   [-1,1].forEach(s=>{const e=new THREE.Group();const o=new THREE.Mesh(new THREE.SphereGeometry(.13,14,10),fm);o.scale.set(1.7,.85,.45);e.add(o);const n=new THREE.Mesh(new THREE.SphereGeometry(.08,12,8),pm);n.scale.set(1.6,.7,.2);n.position.z=.05;e.add(n);e.position.set(s*.66,.22,-.02);e.rotation.z=s*.45;head.add(e);
    const g=at(new THREE.Group(),s*.24,.4,-.05,0,0,-s*.28);g.add(at(new THREE.Mesh(new THREE.CylinderGeometry(.028,.04,.3,6),br),0,.15,0));g.add(at(new THREE.Mesh(new THREE.CylinderGeometry(.02,.028,.16,6),br),s*.07,.22,0,0,0,-s*.9));g.add(at(new THREE.Mesh(new THREE.CylinderGeometry(.018,.025,.13,6),br),-s*.03,.29,0,0,0,s*.55));[[0,.3],[s*.13,.27],[-s*.06,.35]].forEach(([x,y])=>g.add(at(new THREE.Mesh(new THREE.SphereGeometry(.024,8,6),br),x,y,0)));head.add(g)});}
