@@ -1060,7 +1060,7 @@ function result(blob,name,kind){if(lastUrl)URL.revokeObjectURL(lastUrl);lastUrl=
 modal.addEventListener('click',e=>{if(e.target===modal&&!capture)modal.classList.remove('on')});
 const stamp=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return`${d.getMonth()+1}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}`};
 const wait=()=>new Promise(r=>setTimeout(r,0));
-$('#xPng').onclick=async()=>{if(capture)return;capture={kind:'png'};frame(1080,1080);const b=await new Promise(r=>canvas.toBlob(r,'image/png'));capture=null;result(b,`snowball-${stamp()}.png`,'png')};
+$('#xPng').onclick=async()=>{if(capture)return;capture={kind:'png'};const sv0={T,yaw,pitch};T=0;yaw=0;pitch=0;update(0);frame(1080,1080);const b=await new Promise(r=>canvas.toBlob(r,'image/png'));T=sv0.T;yaw=sv0.yaw;pitch=sv0.pitch;update(0);capture=null;result(b,`snowball-${stamp()}.png`,'png')};
 $('#xGif').onclick=async()=>{if(capture)return;capture={kind:'gif'};progress('GIF 만드는 중');
  const N=64,D=6.4,Z=400,frames=[],cv=document.createElement('canvas');cv.width=cv.height=Z;const cx=cv.getContext('2d',{willReadFrequently:true});
  T=Math.round(T/D)*D;for(let i=0;i<60;i++)update(1/30);
