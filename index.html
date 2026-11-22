@@ -1063,11 +1063,9 @@ const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');clearT
 let lastUrl=null;
 function progress(t){mT.textContent=t;mB.innerHTML='<div class="bar"><i id="pb"></i></div>';mA.innerHTML='';modal.classList.add('on')}
 const setP=v=>{const b=$('#pb');if(b)b.style.width=Math.round(v*100)+'%'};
-function result(blob,name,kind){if(lastUrl)URL.revokeObjectURL(lastUrl);lastUrl=URL.createObjectURL(blob);
- mT.textContent=name;mB.innerHTML=(kind==='video'?`<video src="${lastUrl}" controls autoplay loop muted playsinline></video>`:`<img src="${lastUrl}" alt="만든 스노우볼">`)+`<p id="mNote">${dl?'':'이미지를 길게 누르거나 우클릭해서 저장하세요.'}</p>`;
- mA.innerHTML=`<button class="xbtn" id="mClose">닫기</button>${dl?'<button class="xbtn solid" id="mSave">저장</button>':''}`;modal.classList.add('on');
- $('#mClose').onclick=()=>modal.classList.remove('on');
- if(dl)$('#mSave').onclick=async()=>{try{await dl.save({filename:name,data:blob});toast('저장했어요');modal.classList.remove('on')}catch(e){const c=e&&e.code;if(c==='declined')toast('저장을 취소했어요');else if(c==='too_large')toast('파일이 너무 커요');else{$('#mNote').textContent='여기서는 바로 저장이 안 돼요. 길게 누르거나 우클릭해서 저장하세요.';$('#mSave').remove()}}}}
+function result(blob,name,kind){if(lastUrl)URL.revokeObjectURL(lastUrl);lastUrl=URL.createObjectURL(blob);modal.classList.remove('on');
+ const ln=document.createElement('a');ln.href=lastUrl;ln.download=name;ln.rel='noopener';ln.style.display='none';document.body.appendChild(ln);ln.click();setTimeout(()=>ln.remove(),1000);
+ toast(kind==='video'?'영상을 저장했어요':kind==='gif'?'GIF를 저장했어요':'이미지를 저장했어요')}
 modal.addEventListener('click',e=>{if(e.target===modal&&!capture)modal.classList.remove('on')});
 const stamp=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return`${d.getMonth()+1}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}`};
 const wait=()=>new Promise(r=>setTimeout(r,0));
