@@ -439,7 +439,7 @@ function paintFace(cv,c){const x=cv.getContext('2d'),W=cv.width,H=cv.height,{cy,
  if(c.species==='raccoon'){x.fillStyle='rgba(66,59,63,.88)';[-1,1].forEach(s=>{x.save();x.translate(X(s*ex),Y(ey-.012));x.rotate(s*.4);x.beginPath();x.ellipse(0,0,R(.12),R(.09),0,0,Math.PI*2);x.fill();x.restore()})}
  let e1=c.eyeColor==='#3b3333'&&dark?ink:c.eyeColor,e2=c.eyeColor2==='same'?e1:(c.eyeColor2==='#3b3333'&&dark?ink:c.eyeColor2);
  drawEye(x,c.eyes,X(-ex),Y(ey),e1,R,-1,11);drawEye(x,c.eyes,X(ex),Y(ey),e2,R,1,42);
- drawMouth(x,c.mouth,X,Y,R,ey-.13,ink);x.save();x.translate(R(c.markX||0),-R(c.markY||0));drawMark(x,c.mark,X,Y,R,ex,ey);x.restore()}
+ drawMouth(x,c.mouth,X,Y,R,ey-.13,ink);if(c.mark&&c.mark!=='none'){const MC={scar:[0,ey+.015],freckle:[0,ey-.09],bandage:[ex+.11,ey-.1],star:[ex+.1,ey-.1],heart:[ex+.1,ey-.1],tear:[-ex-.01,ey-.07],sweat:[ex+.16,ey+.1],mole:[ex+.05,ey-.13],sparkle:[ex+.14,ey+.03],angry:[ex+.12,ey+.1]}[c.mark]||[0,ey],px=X(MC[0]),py=Y(MC[1]);x.save();x.translate(R(c.markX||0),-R(c.markY||0));x.translate(px,py);x.rotate((c.markR||0)*Math.PI/180);x.translate(-px,-py);drawMark(x,c.mark,X,Y,R,ex,ey);x.restore()}}
 function decal(target,c){const {cy,dw,dh}=FACE,probe=new THREE.Mesh(target.geometry);probe.updateMatrixWorld();
  const g=new THREE.PlaneGeometry(dw,dh,24,18),p=g.attributes.position;
  for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i)+cy;ray.set(new THREE.Vector3(x,y,5),DIR);const h=ray.intersectObject(probe)[0];p.setXYZ(i,x,y,h?h.point.z+.004:0)}
@@ -1081,7 +1081,7 @@ function updTabs(){[0,1].forEach(i=>{const cv=document.getElementById('av'+i);if
 function renderList(){updTabs();
  if(tab<2){const c=S.chars[tab];list.innerHTML=
   sec('몸')+opt('종류',pills('species',O.species,c.species))+(c.species==='shark'?opt('상어',pills('sharkStyle',O.sharkStyle,['arc','tall','hook','wave'].includes(c.sharkStyle)?c.sharkStyle:'arc')):'')+opt('몸통',pills('body',O.body,c.body))+opt('털 색',sws('fur',FUR,c.fur))+
-  sec('얼굴')+opt('눈',icoPills('eyes',O.eyes,c.eyes))+opt('눈 색',sws('eyeColor',EYEC,c.eyeColor))+opt('짝눈',sws('eyeColor2',EYEC,c.eyeColor2,true))+opt('입',icoPills('mouth',O.mouth,c.mouth))+opt('볼',icoPills('blush',O.blush,c.blush))+opt('얼굴',icoPills('mark',O.mark,c.mark||'none'))+(c.mark&&c.mark!=='none'?opt('좌우',`<input type="range" data-mk="markX" min="-0.35" max="0.35" step="0.01" value="${c.markX||0}" aria-label="얼굴 꾸미기 좌우 위치">`)+opt('위아래',`<input type="range" data-mk="markY" min="-0.18" max="0.18" step="0.01" value="${c.markY||0}" aria-label="얼굴 꾸미기 위아래 위치">`):'')+
+  sec('얼굴')+opt('눈',icoPills('eyes',O.eyes,c.eyes))+opt('눈 색',sws('eyeColor',EYEC,c.eyeColor))+opt('짝눈',sws('eyeColor2',EYEC,c.eyeColor2,true))+opt('입',icoPills('mouth',O.mouth,c.mouth))+opt('볼',icoPills('blush',O.blush,c.blush))+opt('얼굴',icoPills('mark',O.mark,c.mark||'none'))+(c.mark&&c.mark!=='none'?opt('좌우',`<input type="range" data-mk="markX" min="-0.35" max="0.35" step="0.01" value="${c.markX||0}" aria-label="얼굴 꾸미기 좌우 위치">`)+opt('위아래',`<input type="range" data-mk="markY" min="-0.18" max="0.18" step="0.01" value="${c.markY||0}" aria-label="얼굴 꾸미기 위아래 위치">`)+opt('회전',`<input type="range" data-mk="markR" min="-180" max="180" step="1" value="${c.markR||0}" aria-label="얼굴 꾸미기 회전">`):'')+
   sec('꾸미기')+opt('머리',pills('head',O.head,c.head))+opt('등',pills('back',O.back,c.back))+opt('손',pills('item',O.item,c.item))+opt('포인트',sws('accent',ACC,c.accent))+
   sec('움직임')+opt('동작',pills('pose',O.pose,c.pose));
   eyeIcons(c.eyeColor==='#3b3333'?getComputedStyle(document.body).getPropertyValue('--eye').trim()||'#3b3333':c.eyeColor)}
